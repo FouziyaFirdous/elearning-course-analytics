@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}E-Learning Analytics{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-icon">✦</span><span><b>E-Learning Analytics</b><small>Course engagement insights</small></span></a>
+    <nav>
+      <a class="{{ 'selected' if active_page=='dashboard' else '' }}" href="{{ url_for('dashboard') }}">▦ &nbsp; Dashboard</a>
+      <a class="{{ 'selected' if active_page=='courses' else '' }}" href="{{ url_for('courses_page') }}">▣ &nbsp; Courses</a>
+      <a class="{{ 'selected' if active_page=='learners' else '' }}" href="{{ url_for('learners_page') }}">♟ &nbsp; Learners</a>
+      <a class="{{ 'selected' if active_page=='enrollments' else '' }}" href="{{ url_for('enrollments_page') }}">☷ &nbsp; Enrolments</a>
+      <a class="{{ 'selected' if active_page=='activities' else '' }}" href="{{ url_for('activities_page') }}">▶ &nbsp; Activities</a>
+      <a class="{{ 'selected' if active_page=='reports' else '' }}" href="{{ url_for('reports') }}">▤ &nbsp; Reports</a>
+      <a class="{{ 'selected' if active_page=='charts' else '' }}" href="{{ url_for('charts') }}">▥ &nbsp; Charts</a>
+    </nav>
+    <div class="sidebar-foot">Project 17 · Intermediate</div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><span>Learning analytics workspace</span><span>{{ now_label if now_label else "E-Learning Course Analytics System" }}</span></header>
+    <section class="page">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<div class="flashes">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+      <footer>Aggregate learning analytics · Missing activity is not proof of lack of learning.</footer>
+    </section>
+  </main>
+</div>
+</body>
+</html>

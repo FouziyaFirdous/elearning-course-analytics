@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Activities{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">LEARNING RECORDS</p><h1>Activities</h1><p class="muted">Record lesson, quiz, and assignment activity with a timestamp.</p></div></div>
+<div class="split">
+<section class="panel"><h2>Record activity</h2><form method="post" class="form">
+<label>Active enrolment<select name="enrollment_id" required>{% for e in enrollments %}<option value="{{ e.enrollment_id }}">#{{ e.enrollment_id }} · {{ e.roll_no }} · {{ e.course_name }}</option>{% endfor %}</select></label>
+<label>Activity type<select name="activity_type" required><option>Lesson</option><option>Quiz</option><option>Assignment</option><option>Video</option><option>Reading</option></select></label>
+<label>Completion status<select name="completed"><option value="yes">Completed</option><option value="no">Not completed</option></select></label>
+<button class="button" type="submit">Save activity</button></form></section>
+<section class="panel"><h2>Recent activity</h2><div class="table-wrap"><table><thead><tr><th>Enrolment</th><th>Learner</th><th>Course</th><th>Activity</th><th>Completed</th><th>Date</th></tr></thead><tbody>
+{% for a in activities %}<tr><td>{{ a.enrollment_id }}</td><td>{{ a.roll_no }}</td><td>{{ a.course_name }}</td><td>{{ a.activity_type }}</td><td>{{ 'Yes' if a.completed else 'No' }}</td><td>{{ a.activity_date }}</td></tr>{% else %}<tr><td colspan="6">No activities recorded.</td></tr>{% endfor %}
+</tbody></table></div></section>
+</div>{% endblock %}

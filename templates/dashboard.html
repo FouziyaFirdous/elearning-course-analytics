@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · E-Learning Analytics{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">OVERVIEW</p><h1>E-Learning Course Analytics System</h1><p class="muted">Analyze course enrolments, learning activity, and completion patterns.</p></div><a class="button" href="{{ url_for('reports') }}">View reports ↗</a></div>
+<div class="metrics">
+  <article class="metric blue"><span>Total courses</span><strong>{{ total_courses }}</strong><small>Courses in the system</small></article>
+  <article class="metric green"><span>Total learners</span><strong>{{ total_learners }}</strong><small>Registered learners</small></article>
+  <article class="metric purple"><span>Eligible enrolments</span><strong>{{ total_enrollments }}</strong><small>Active + completed</small></article>
+  <article class="metric orange"><span>Overall completion</span><strong>{{ overall_rate }}%</strong><small>{{ total_completed }} of {{ total_enrollments }} eligible enrolments</small></article>
+</div>
+<div class="chart-grid">
+  <article class="panel"><h2>Course completion rates</h2><img class="chart" src="{{ url_for('static', filename='generated/completion_rates.png') }}" alt="Course completion rates chart"></article>
+  <article class="panel"><h2>Enrolment vs completion</h2><img class="chart" src="{{ url_for('static', filename='generated/course_comparison.png') }}" alt="Course comparison chart"></article>
+  <article class="panel"><h2>Weekly learning activity</h2><img class="chart" src="{{ url_for('static', filename='generated/weekly_activity.png') }}" alt="Weekly activity chart"></article>
+</div>
+<div class="panel">
+  <div class="section-heading"><div><h2>Course completion report</h2><p class="muted">Withdrawn enrolments are excluded from the denominator.</p></div><a href="{{ url_for('reports') }}">Full reports →</a></div>
+  <div class="table-wrap"><table><thead><tr><th>Course</th><th>Category</th><th>Eligible enrolments</th><th>Completed</th><th>Completion rate</th></tr></thead><tbody>
+  {% for c in courses %}<tr><td>{{ c.course_name }}</td><td>{{ c.category or '—' }}</td><td>{{ c.total_enrollments }}</td><td>{{ c.completed_enrollments }}</td><td><span class="pill">{{ "%.2f"|format(c.completion_rate) }}%</span></td></tr>{% else %}<tr><td colspan="5">No courses yet. Add a course to get started.</td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+<div class="quick-actions"><h2>Quick actions</h2><div class="actions"><a class="button" href="{{ url_for('courses_page') }}">＋ Add course</a><a class="button secondary" href="{{ url_for('learners_page') }}">＋ Register learner</a><a class="button secondary" href="{{ url_for('enrollments_page') }}">＋ Enrol learner</a><a class="button secondary" href="{{ url_for('activities_page') }}">＋ Record activity</a></div></div>
+{% endblock %}

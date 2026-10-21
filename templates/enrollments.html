@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Enrolments{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">MANAGEMENT</p><h1>Enrolments</h1><p class="muted">Link a registered learner to a course and track status.</p></div></div>
+<div class="split">
+<section class="panel"><h2>Create enrolment</h2><form method="post" class="form">
+<label>Learner<select name="learner_id" required>{% for l in learners %}<option value="{{ l.learner_id }}">{{ l.roll_no }} (ID {{ l.learner_id }})</option>{% endfor %}</select></label>
+<label>Course<select name="course_id" required>{% for c in courses %}<option value="{{ c.course_id }}">{{ c.course_name }} (ID {{ c.course_id }})</option>{% endfor %}</select></label>
+<button class="button" type="submit">Create enrolment</button></form></section>
+<section class="panel"><h2>All enrolments</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>Learner</th><th>Course</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for e in enrollments %}<tr><td>{{ e.enrollment_id }}</td><td>{{ e.roll_no }}</td><td>{{ e.course_name }}</td><td><span class="status {{ e.status }}">{{ e.status }}</span></td><td>{% if e.status == 'active' %}<form method="post" action="{{ url_for('complete_enrollment', enrollment_id=e.enrollment_id) }}"><button class="small-button" type="submit">Mark completed</button></form>{% else %}—{% endif %}</td></tr>{% else %}<tr><td colspan="5">No enrolments found.</td></tr>{% endfor %}
+</tbody></table></div></section>
+</div>{% endblock %}

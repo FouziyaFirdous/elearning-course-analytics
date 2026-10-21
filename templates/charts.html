@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Charts{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">VISUALIZATIONS</p><h1>Course analytics charts</h1><p class="muted">Charts are generated from the current database records.</p></div><a class="button" href="{{ url_for('charts') }}">Refresh charts ↻</a></div>
+<div class="chart-page-grid">
+<article class="panel"><h2>Enrolment vs completion</h2><img class="chart" src="{{ url_for('static', filename='generated/course_comparison.png') }}" alt="Course comparison chart"></article>
+<article class="panel"><h2>Completion rates</h2><img class="chart" src="{{ url_for('static', filename='generated/completion_rates.png') }}" alt="Completion rate chart"></article>
+<article class="panel"><h2>Weekly activity</h2><img class="chart" src="{{ url_for('static', filename='generated/weekly_activity.png') }}" alt="Weekly activity chart"></article>
+</div>{% endblock %}
