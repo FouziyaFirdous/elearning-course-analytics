@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}Courses{% endblock %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">MANAGEMENT</p><h1>Courses</h1><p class="muted">Add and view courses available in the system.</p></div></div>
+<div class="split">
+<section class="panel"><h2>Add a course</h2><form method="post" class="form"><label>Course name<input name="course_name" required maxlength="100" placeholder="e.g. SQL Fundamentals"></label><label>Category<input name="category" required maxlength="50" placeholder="e.g. Database"></label><button class="button" type="submit">Add course</button></form></section>
+<section class="panel"><h2>Course list</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>Course</th><th>Category</th></tr></thead><tbody>{% for c in courses %}<tr><td>{{ c.course_id }}</td><td>{{ c.course_name }}</td><td>{{ c.category or '—' }}</td></tr>{% else %}<tr><td colspan="3">No courses found.</td></tr>{% endfor %}</tbody></table></div></section>
+</div>{% endblock %}

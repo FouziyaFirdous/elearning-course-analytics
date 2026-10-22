@@ -1,0 +1,2 @@
+{% extends "base.html" %}{% block title %}Application error{% endblock %}
+{% block content %}<section class="panel"><h1>Unable to load the page</h1><p>Check that MySQL is running, the database exists, and your connection settings are correct.</p><pre class="error-text">{{ error }}</pre></section>{% endblock %}
