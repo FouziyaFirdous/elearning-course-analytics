@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Learners{% endblock %}{% block crumb %}Learners{% endblock %}
+{% block content %}
+<section class="page-heading"><div><div class="eyebrow">PEOPLE <span>✦</span></div><h1>Learners</h1><p class="muted">View course participation and recorded practice results.</p></div><div class="heading-actions"><a class="btn btn-primary" href="{{ url_for('add_learner') }}">＋ Add learner</a></div></section>
+<section class="panel table-panel"><div class="panel-heading"><div><h2>Learner directory</h2><p>Practice accuracy is calculated from saved practice question results only.</p></div><span class="panel-tag">{{ learners|length }} LEARNERS</span></div>
+<div class="table-scroll"><table><thead><tr><th>Learner</th><th>Roll number</th><th>Enrolled courses</th><th>Completed courses</th><th>Average progress</th><th>Practice accuracy</th></tr></thead><tbody>
+{% for l in learners %}<tr><td><div class="course-name"><span class="learner-avatar avatar-{{ loop.index % 5 }}">{{ l.learner_name[0] }}</span><strong>{{ l.learner_name }}</strong></div></td><td>{{ l.roll_no }}</td><td>{{ l.enrolled_courses }}</td><td>{{ l.completed_courses }}</td><td><div class="rate-cell"><div class="progress-track"><span style="width:{{ l.avg_progress }}%"></span></div><strong>{{ l.avg_progress }}%</strong></div></td><td>{% if l.accuracy %}<strong>{{ l.accuracy }}%</strong>{% else %}<span class="muted">No practice data</span>{% endif %}</td></tr>{% endfor %}
+</tbody></table></div></section>
+<div class="notice">These figures describe recorded activity and practice outcomes. They should not be treated as a complete assessment of a learner's ability.</div>
+{% endblock %}

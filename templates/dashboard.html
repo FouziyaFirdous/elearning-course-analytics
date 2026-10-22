@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}{% block crumb %}Overview{% endblock %}
+{% block content %}
+<section class="page-heading">
+ <div><div class="eyebrow">LEARNING INTELLIGENCE <span>✦</span></div><h1>Course overview</h1><p class="muted">A clearer picture of learning activity, progress, and course engagement.</p></div>
+ <div class="heading-actions"><a class="btn btn-soft" href="{{ url_for('activities') }}">＋ Log activity</a><a class="btn btn-primary" href="{{ url_for('enroll') }}">＋ New enrolment</a></div>
+</section>
+<section class="metric-grid">
+ <article class="metric-card"><div class="metric-top"><span>Total learners</span><span class="metric-icon lavender">♙</span></div><div class="metric-value">{{ summary.learners }}</div><div class="metric-foot">Learner profiles in the system</div></article>
+ <article class="metric-card"><div class="metric-top"><span>Course enrolments</span><span class="metric-icon mint">▤</span></div><div class="metric-value">{{ summary.enrollments }}</div><div class="metric-foot">Across all listed courses</div></article>
+ <article class="metric-card"><div class="metric-top"><span>Completion rate</span><span class="metric-icon peach">✓</span></div><div class="metric-value">{{ summary.completion_rate }}<small>%</small></div><div class="metric-foot">Completed enrolments / all enrolments</div></article>
+ <article class="metric-card"><div class="metric-top"><span>Recorded activities</span><span class="metric-icon blue">↗</span></div><div class="metric-value">{{ summary.activity_count }}</div><div class="metric-foot">Activity records captured</div></article>
+</section>
+<section class="chart-grid">
+ <article class="panel chart-panel wide"><div class="panel-heading"><div><h2>Course enrolments & completions</h2><p>Compare total enrolments with completed enrolments.</p></div><span class="panel-tag">BY COURSE</span></div><div class="chart-wrap"><canvas id="courseChart"></canvas></div></article>
+ <article class="panel chart-panel"><div class="panel-heading"><div><h2>Enrolment status</h2><p>Completed vs active vs paused</p></div></div><div class="donut-wrap"><canvas id="statusChart"></canvas></div><div class="chart-foot"><span><i class="dot purple"></i>Completed</span><span><i class="dot teal"></i>Active</span><span><i class="dot grey"></i>Paused</span></div></article>
+ <article class="panel chart-panel"><div class="panel-heading"><div><h2>Practice accuracy</h2><p>Average correct answers on recorded practice</p></div><span class="panel-tag">PERCENT</span></div><div class="chart-wrap small"><canvas id="accuracyChart"></canvas></div></article>
+ <article class="panel chart-panel wide"><div class="panel-heading"><div><h2>Weekly learning activity</h2><p>Count of recorded activities by week, not a measure of ability.</p></div><span class="panel-tag">WEEKLY TREND</span></div><div class="chart-wrap"><canvas id="weeklyChart"></canvas></div></article>
+</section>
+<section class="panel table-panel">
+ <div class="panel-heading"><div><h2>Course performance snapshot</h2><p>Aggregate completion rates across each course.</p></div><span class="panel-tag">ALL COURSES</span></div>
+ <div class="table-scroll"><table><thead><tr><th>Course</th><th>Category</th><th>Enrolments</th><th>Completed</th><th>Completion rate</th></tr></thead><tbody>
+ {% for c in courses %}<tr><td><div class="course-name"><span class="course-symbol">{{ loop.index }}</span><strong>{{ c.course_name }}</strong></div></td><td><span class="category-pill">{{ c.category }}</span></td><td>{{ c.enrollments }}</td><td>{{ c.completed }}</td><td><div class="rate-cell"><div class="progress-track"><span style="width:{{ c.completion_rate }}%"></span></div><strong>{{ c.completion_rate }}%</strong></div></td></tr>{% endfor %}
+ </tbody></table></div>
+</section>
+<section class="panel table-panel">
+ <div class="panel-heading"><div><h2>Follow-up list</h2><p>Active enrolments with no recorded activity in the last 14 days.</p></div><span class="count-pill">{{ inactive|length }} flagged</span></div>
+ <div class="notice">A missing activity record does not prove that a learner is not learning. Use this list only as a prompt to check in.</div>
+ <div class="table-scroll"><table><thead><tr><th>Learner</th><th>Course</th><th>Last recorded activity</th><th>Enrolled</th></tr></thead><tbody>
+ {% for x in inactive %}<tr><td><strong>{{ x.learner_name }}</strong><small class="subline">{{ x.roll_no }}</small></td><td>{{ x.course_name }}</td><td>{{ x.last_activity or 'No activity recorded' }}</td><td>{{ x.enrolled_at }}</td></tr>{% else %}<tr><td colspan="4" class="empty">No enrolments currently meet the 14-day follow-up rule.</td></tr>{% endfor %}
+ </tbody></table></div>
+</section>
+<script>
+const courses = {{ courses|tojson }};
+const learners = {{ learners|tojson }};
+const weekly = {{ activity_rows|tojson }};
+const status = {{ {'completed': summary.completed, 'active': summary.enrollments-summary.completed, 'paused': 0}|tojson }};
+const palette = ['#7768f5','#32b8a6','#ffb86b','#78a9ff','#f18aab','#9b8afb'];
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.color = '#8a8fa8';
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+new Chart(document.getElementById('courseChart'), {type:'bar',data:{labels:courses.map(x=>x.course_name),datasets:[
+ {label:'Enrolments',data:courses.map(x=>x.enrollments),backgroundColor:'#dcd8ff',borderRadius:7,barPercentage:.65},
+ {label:'Completed',data:courses.map(x=>x.completed),backgroundColor:'#7768f5',borderRadius:7,barPercentage:.65}
+]},options:{maintainAspectRatio:false,responsive:true,plugins:{legend:{position:'bottom',align:'start'}},scales:{x:{grid:{display:false},ticks:{maxRotation:25,minRotation:0}},y:{beginAtZero:true,grid:{color:'#f0f0f6'},ticks:{precision:0}}}}});
+new Chart(document.getElementById('statusChart'), {type:'doughnut',data:{labels:['Completed','Active','Paused'],datasets:[{data:[status.completed,status.active,status.paused],backgroundColor:['#7768f5','#32b8a6','#e5e7ef'],borderWidth:0,hoverOffset:5}]},options:{maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
+new Chart(document.getElementById('accuracyChart'), {type:'bar',data:{labels:learners.map(x=>x.roll_no),datasets:[{label:'Practice accuracy',data:learners.map(x=>x.accuracy),backgroundColor:learners.map((x,i)=>palette[i%palette.length]),borderRadius:5}]},options:{maintainAspectRatio:false,responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,max:100,grid:{color:'#f0f0f6'},ticks:{callback:v=>v+'%'}}}}});
+new Chart(document.getElementById('weeklyChart'), {type:'line',data:{labels:weekly.map(x=>x.week_label),datasets:[{label:'Activities recorded',data:weekly.map(x=>x.total_activities),borderColor:'#7768f5',backgroundColor:'rgba(119,104,245,.12)',fill:true,tension:.35,pointRadius:4,pointBackgroundColor:'#7768f5'}]},options:{maintainAspectRatio:false,responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,grid:{color:'#f0f0f6'},ticks:{precision:0}}}}});
+</script>
+{% endblock %}

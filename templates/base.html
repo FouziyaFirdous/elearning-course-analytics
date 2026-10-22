@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Learnlytics{% endblock %} · Learnlytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-mark">L</span><span>learnlytics<small>COURSE INSIGHTS</small></span></a>
+    <div class="nav-label">WORKSPACE</div>
+    <a class="nav-link {% if request.endpoint=='dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">◫ <span>Overview</span></a>
+    <a class="nav-link {% if request.endpoint=='learner_list' or request.endpoint=='add_learner' %}active{% endif %}" href="{{ url_for('learner_list') }}">♙ <span>Learners</span></a>
+    <a class="nav-link {% if request.endpoint=='enroll' %}active{% endif %}" href="{{ url_for('enroll') }}">＋ <span>Enrolments</span></a>
+    <a class="nav-link {% if request.endpoint=='activities' %}active{% endif %}" href="{{ url_for('activities') }}">◷ <span>Log activity</span></a>
+    <div class="sidebar-note"><span class="note-icon">✦</span><strong>Learning, visualized.</strong><p>Understand engagement patterns with clear, aggregate data.</p></div>
+    <div class="sidebar-bottom"><span class="avatar">A</span><span>Analytics workspace<small>Demo dataset</small></span></div>
+  </aside>
+  <main class="main-area">
+    <header class="topbar"><span class="breadcrumb">Workspace <span>/</span> {% block crumb %}Overview{% endblock %}</span><span class="top-status"><i></i> Analytics ready</span></header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+    <footer>Learnlytics · E-Learning Course Analytics <span>Demo data · Not an automated grading system</span></footer>
+  </main>
+</div>
+</body>
+</html>
